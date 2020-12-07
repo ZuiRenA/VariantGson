@@ -1,0 +1,2 @@
+# VariantGson
+support custom @SerializedName
