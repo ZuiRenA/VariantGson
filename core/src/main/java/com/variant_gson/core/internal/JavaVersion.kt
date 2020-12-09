@@ -10,11 +10,13 @@ import java.lang.NumberFormatException
  */
 object JavaVersion {
 
-    private val majorJavaVersion: Int get() {
+    val majorJavaVersion: Int get() {
         val javaVersion = System.getProperty("java.version")
         return getMajorJavaVersion(javaVersion)
     }
 
+    @JvmStatic
+    fun isJava9OrLater() = majorJavaVersion >= 9
 
     // Visible for testing only
     private fun getMajorJavaVersion(javaVersion: String): Int {

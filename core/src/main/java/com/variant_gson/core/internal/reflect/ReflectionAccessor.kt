@@ -1,5 +1,8 @@
 package com.variant_gson.core.internal.reflect
 
+import com.variant_gson.core.internal.JavaVersion
+import java.lang.reflect.AccessibleObject
+
 /**
  * Come from Gson
  *
@@ -16,7 +19,33 @@ package com.variant_gson.core.internal.reflect
 abstract class ReflectionAccessor {
 
 
+    /**
+     * Does the same as @code ao.setAccessible(true), but never throws
+     * [java.lang.reflect.InaccessibleObjectException]
+     */
+    abstract fun makeAccessible(ao: AccessibleObject)
+
+
     companion object {
-        private val instance: ReflectionAccessor = Java
+        // the singleton instance, use getInstance() to obtain
+        private val INSTANCE: ReflectionAccessor by lazy {
+            if (!JavaVersion.isJava9OrLater()) {
+                PreJava9ReflectionAccessor()
+            } else {
+                UnsafeReflectionAccessor()
+            }
+        }
+
+
+        /**
+         * Obtains a [ReflectionAccessor] instance suitable for the current Java version.
+         *
+         *
+         * You may need one a reflective operation in your code throws [java.lang.reflect.InaccessibleObjectException].
+         * In such a case, use [ReflectionAccessor#makeAccessible(AccessibleObject)] on a field, method or constructor
+         * (instead of basic [AccessibleObject#setAccessible(boolean)]).
+         */
+        @JvmStatic
+        fun getInstance(): ReflectionAccessor = INSTANCE
     }
 }
