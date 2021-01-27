@@ -94,4 +94,6 @@ public @interface SerializedName {
      * @return the alternative names of the field when it is deserialized
      */
     String[] alternate() default {};
+
+    boolean convertible() default false;
 }

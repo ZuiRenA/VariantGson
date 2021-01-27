@@ -786,8 +786,9 @@ object TypeAdapters {
                     var name = constant.name
                     val annotation: SerializedName? = classOfT.getField(name).getAnnotation(SerializedName::class.java)
                     if (annotation != null) {
-                        name = serializedAdapter.adapter(annotation, annotation.value)
-                        val alternateList = serializedAdapter.adapterAlternate(annotation, annotation.alternate)
+                        name = if (annotation.convertible) serializedAdapter.adapter(annotation, annotation.value) else annotation.value
+                        val alternateList = if (annotation.convertible)
+                            serializedAdapter.adapterAlternate(annotation, annotation.alternate) else annotation.alternate
                         for (alternate in alternateList) {
                             nameToConstant[alternate] = constant
                         }
